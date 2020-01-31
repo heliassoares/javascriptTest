@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-nz">
+<head>
+<meta charset="UTF-8">
+<title>Experiment</title>
+
+<style>
+body{
+	max-width: 960px;
+	margin: 0 auto;
+}
+
+/* Added a few new styles. Really these should be in their own styles.css file*/
+#estimate{
+	color: dodgerblue;
+	font-weight: bold;
+}
+
+fieldset{
+	background-color: aliceblue;
+	margin-top: 1em;
+	margin-bottom: 2em;
+	border-radius: 0.2em;
+}
+
+fieldset legend{
+	background-color: aliceblue;
+	border: 1px outset;
+	border-radius: 0.2em;
+	padding: 0.2em;
+}
+</style>
+
+<script>
+//This script tag should probably be a seperate file
+function toggleBlocks(){//Renamed to toggleBlocks be reflect what it does better
+	//Shortened into one line.
+	//This may be a bit harder to read, so you don't have to do this, I just like it
+	document.getElementById('blocks').style.display = document.getElementById('txtInput').checked ? 'block' : 'none';
+}
+
+function updateLabels(){//Merged the two update functions into one, this way, the estimate updates nicely no matter which part you change
+	const sliderVal = parseInt(document.getElementById('slider').value);//Get the value of the slider
+	document.getElementById('lblSlider').innerText = '(' + sliderVal + ')';//Moved the display here too
+	const radioVal = parseInt(document.querySelector('input[name="option"]:checked').value);//Use querySelector to find the checked radio button. This assumes that there is one checked, it will break if there isn't
+	document.getElementById('estimate').innerHTML = sliderVal + ' x ' + radioVal + ' = ' + (sliderVal * radioVal);//Update the estimate
+}
+
+//Run scripts here
+window.addEventListener('DOMContentLoaded', (e) => {//You can do multiple things in this event, so moved all the setup stuff into one
+	document.getElementById('txtInput').checked = false;//Hard clear the checkbox. Otherwise a soft refresh will leave it checked, but the boxes won't be visible
+	//Bind the events
+    document.getElementById('txtInput').addEventListener('change',toggleBlocks);
+	document.getElementById('slider').addEventListener('input',updateLabels);
+	document.getElementById('radio').addEventListener('change',updateLabels);
+	updateLabels();//Run update first, so there's a default value. This will run on "frame 1" even if the blocks are invisible. You could put this call in toggleB1 instead if you want to delay execution, but for a function as fast as this, there's no need
+});
+</script>
+</head>
+<body>
+<h1>HTML JS Practise</h1>
+<div>
+	<input id="txtInput" type="checkbox">
+	<label for="txtInput">Show blocks</label>
+</div>
+<div id="blocks" style="display:none;">
+	<fieldset id="b1"><!-- Using fieldsets to get a little visual seperation, and to provide some symantic structure -->
+		<legend>Block 1</legend>
+		<input id="slider" min="1" max="100" step="1" value="50" type="range">
+		<label id="lblSlider" for="slider" ></label>
+	</fieldset>
+	<fieldset id="b2" >
+		<legend>Block 2</legend>
+		<div id="radio">
+			<input id="r1" name="option" type="radio" value="100" checked>
+			<label for="r1">100</label>
+			
+			<input id="r2" name="option" type="radio" value="200">
+			<label for="r2">200</label>
+		</div>
+	</fieldset>
+	<div>
+		<label for="estimate">Estimate:</label><!-- Swapped the label to be the name, and just using a span for the result. Labels should point to the data, not be the data itself -->
+		<span id="estimate"></span>
+	</div>
+</div>
+</body>
+</html>
+
+
